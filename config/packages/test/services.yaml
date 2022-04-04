@@ -1,0 +1,7 @@
+services:
+    _defaults:
+        # All services in test environment are public so we can override them
+        public: true
+
+    App\Service\HttpClientFactoryInterface:
+        class: App\Service\HttpClientFactory

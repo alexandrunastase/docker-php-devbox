@@ -1,0 +1,5 @@
+!./docker
+./k8s
+Makefile
+.git/**
+.gitlab-ci.yml
