@@ -1,5 +1,3 @@
-# vim: set tabstop=8 softtabstop=8 noexpandtab:
-
 .PHONY: run
 run:
 	@if [ ! -e ".env.local" ]; then\
