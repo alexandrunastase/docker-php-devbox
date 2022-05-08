@@ -32,6 +32,3 @@ test:
 destroy:
 	@docker-compose down --rmi local
 
-.PHONY: ci-install
-ci-install:
-	@docker-compose exec -T devbox-service composer install
