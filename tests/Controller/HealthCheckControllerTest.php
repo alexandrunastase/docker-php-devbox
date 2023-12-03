@@ -10,6 +10,7 @@ class HealthCheckControllerTest extends WebTestCase
 {
     public function testHealthZEndpoint(): void
     {
+        trigger_deprecation('vendor-name/package-name', '1.3', 'Your deprecation message');
         $client = static::createClient();
         $client->request('GET', '/healthz');
 

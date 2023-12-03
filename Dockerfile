@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 LABEL maintainer="alexandrunastase@github"
 LABEL description="Devbox Docker image"
@@ -29,14 +29,16 @@ RUN set -ex \
     && apk add --update --no-cache \
     ${PHPIZE_DEPS} \
     curl \
+    linux-headers \
     # Runtime deps
     icu-dev icu-libs \
     libzip-dev zlib-dev \
     libxml2-dev \
     oniguruma-dev \
+    postgresql-dev \
     && pecl install xdebug \
-    && docker-php-ext-install intl opcache pdo_mysql zip bcmath mbstring sockets pcntl soap sockets ctype > /dev/null \
-    && docker-php-ext-enable intl opcache pdo_mysql zip bcmath mbstring sockets pcntl soap sockets ctype \
+    && docker-php-ext-install intl opcache pdo_mysql pdo_pgsql zip bcmath mbstring sockets pcntl soap sockets ctype > /dev/null \
+    && docker-php-ext-enable intl opcache pdo_mysql pdo_pgsql zip bcmath mbstring sockets pcntl soap sockets ctype \
     && apk del ${PHPIZE_DEPS} \
     && docker-php-source delete
 

@@ -1,48 +1,44 @@
 version: '3.5'
 
 services:
-  devbox:
-    container_name: devbox-nginx
-    build:
-      context: ./docker/nginx
-      dockerfile: Dockerfile
-    ports:
-      - "9001:80"
-    volumes:
-      - .:/app:cached
-    restart: unless-stopped
-    depends_on:
-      - devbox-service
+    devbox:
+        container_name: "devbox-nginx"
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        ports:
+            - "9001:80"
+        volumes:
+            - .:/app:cached
+        restart: unless-stopped
+        depends_on:
+            - devbox-service
 
-  devbox-service:
-    container_name: devbox-service
-    build:
-      context: .
-    volumes:
-      - .:/app:cached
-      - ./docker/service/php.ini:/usr/local/etc/php/conf.d/99-app.ini
-      - ./docker/service/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    restart: unless-stopped
-    environment:
-      XDEBUG_CONFIG: ${XDEBUG_CONFIG}
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_SECRET: ${APP_SECRET}
-    depends_on:
-      - mysql
+    devbox-service:
+        container_name: devbox-service
+        build:
+            context: .
+        volumes:
+            - .:/app:cached
+            - ./docker/service/php.ini:/usr/local/etc/php/conf.d/99-app.ini
+            - ./docker/service/www.conf:/usr/local/etc/php-fpm.d/www.conf
+        restart: unless-stopped
+        env_file:
+            - .env.local
+        depends_on:
+            - devbox-database
 
-  mysql:
-    image: mysql:8.0
-    container_name: devbox-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: database
-    ports:
-      - "3308:3306"
-    volumes:
-      - database-volume:/var/lib/mysql
+    devbox-database:
+        image: postgres:15-alpine
+        container_name: "devbox-database"
+        restart: always
+        env_file:
+            - .env.local
+        ports:
+            - "5431:5432"
+        volumes:
+            - devbox-database-volume:/var/lib/postgresql/data
 
 volumes:
-  database-volume:
-    driver: "local"
+    devbox-database-volume:
+        driver: "local"

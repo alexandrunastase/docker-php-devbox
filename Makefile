@@ -8,25 +8,34 @@ run:
 
 .PHONY: install
 install:
-	docker-compose --env-file=.env.local exec --user="php" -T devbox-service composer install
+	docker compose exec --user="php" -T devbox-service bin/warmup
+	docker-compose exec --user="php" -T devbox-service composer install
 
 .PHONY: stop
 stop:
-	docker-compose --env-file=.env.local stop
+	docker-compose stop
 
 .PHONY: enter
 enter:
-	docker-compose --env-file=.env.local  exec --user="php" devbox-service /bin/sh
+	docker-compose  exec --user="php" devbox-service /bin/sh
 
 .PHONY: enter-as-root
 enter-as-root:
-	docker-compose --env-file=.env.local  exec --user="root" devbox-service /bin/sh
+	docker-compose  exec --user="root" devbox-service /bin/sh
 
 .PHONY: test
 test:
-	docker-compose --env-file=.env.local  exec --user="php" -T devbox-service /bin/sh -c 'APP_ENV="test" ./bin/phpunit --testdox'
+	docker-compose  exec --user="php" -T devbox-service /bin/sh -c 'APP_ENV="test" ./bin/phpunit --testdox'
 
 .PHONY: destroy
 destroy:
-	docker-compose --env-file=.env.local down --rmi local
+	docker-compose down --rmi local
 
+cc: clear-cache
+.PHONY: clear-cache
+clear-cache:
+	@docker-compose exec devbox-service /bin/sh -c 'rm -rf var/cache/*'
+
+.PHONY: clear-cache
+logs:
+	docker compose logs -f

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+panicIfErr () {
+    result="$?"
+    if [ "$result" == "254" ]
+    then
+        echo ""
+        echo "Warmup locked"
+        exit 0
+    fi
+    if [ "$result" -ne 0 ]
+    then
+        echo ""
+        echo End WarmUp process with error
+        exit "$result"
+    fi
+}
+
+echo "Started running bin/warmup"
+./bin/console doctrine:database:create --if-not-exists --no-interaction
+panicIfErr
+
+./bin/console doctrine:migrations:migrate --allow-no-migration --no-interaction
+panicIfErr
+
+echo ""
+echo "Finished running warmup successfully"
